@@ -96,7 +96,7 @@ public class UserController
         return iUserService.forgetRestPassword(username,passwordNew,forgetToken);
     }
 
-    @RequestMapping(value = "reset_reset_password.do",method = RequestMethod.POST)
+    @RequestMapping(value = "reset_password.do",method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<String> resetPassword(HttpSession session,String passwordOld,String passwordNew)
     {
@@ -108,7 +108,7 @@ public class UserController
         return iUserService.resetPassword(passwordOld,passwordNew,user);
     }
 
-    @RequestMapping(value = "reset_imformation.do",method = RequestMethod.POST)
+    @RequestMapping(value = "update_imformation.do",method = RequestMethod.POST)
     @ResponseBody
     public ServerResponse<User> update_information(HttpSession session,User user)
     {

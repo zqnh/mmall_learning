@@ -129,7 +129,7 @@ public class UserServiceImpl implements IUserService
 
     public ServerResponse<String> forgetRestPassword(String username,String passwordNew,String forgetToken)
     {
-        if(StringUtils.isNotBlank(forgetToken))
+        if(StringUtils.isBlank(forgetToken))
         {
             return ServerResponse.createByErrorMessage("参数错误，token需要传递");
         }
@@ -140,7 +140,7 @@ public class UserServiceImpl implements IUserService
             ServerResponse.createByErrorMessage("用户名不存在");
         }
         String token = TokenCache.getKey("token_"+username);
-        if(StringUtils.isNotBlank(token))
+        if(StringUtils.isBlank(token))
         {
             return ServerResponse.createByErrorMessage("token无效或者过期");
         }
@@ -170,11 +170,13 @@ public class UserServiceImpl implements IUserService
         }
         user.setPassword(MD5Util.MD5EncodeUtf8(passwordNew));
         int updateCount = userMapper.updateByPrimaryKeySelective(user);
+        System.out.println("---------------------------------------------------------------");
+        System.out.println(updateCount);
         if(updateCount>0)
         {
-            ServerResponse.createBySuccessMessage("密码更新成功");
+            ServerResponse.createBySuccessMessage("密码更新失败");
         }
-        return ServerResponse.createByErrorMessage("密码更新失败");
+        return ServerResponse.createByErrorMessage("密码更新成功");
     }
 
     public ServerResponse<User> updateInformation(User user)
@@ -211,5 +213,21 @@ public class UserServiceImpl implements IUserService
         }
         user.setPassword(StringUtils.EMPTY);
         return ServerResponse.createBySuccess(user);
+    }
+
+    //backend
+
+    /**
+     * 校验是否是管理员
+     * @param user
+     * @return
+     */
+    public ServerResponse checkAdminRole(User user)
+    {
+        if(user!=null&&user.getRole().intValue() == Const.Role.ROLE_ADMAIN)
+        {
+            return ServerResponse.createBySuccess();
+        }
+        return ServerResponse.createByError();
     }
 }
